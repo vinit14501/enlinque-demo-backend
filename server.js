@@ -19,7 +19,9 @@ connectDB()
 // CORS Configuration
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL.replace(/\/$/, ""), // Remove trailing slash
+    origin: process.env.FRONTEND_URL
+      ? process.env.FRONTEND_URL.replace(/\/$/, "")
+      : "*",
     credentials: true,
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
