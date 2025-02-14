@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /api/health
+Allow: /api/sitemap.xml
+Allow: /api/robots.txt
+Disallow: /api/private/
+Disallow: /api/admin/
+Disallow: /api/internal/
+Disallow: /api/auth/
+Disallow: /api/test/
+Disallow: /api/dev/
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /*?*
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content
+Crawl-delay: 10
+
+Sitemap: https://enlinque.com/sitemap.xml
+Host: https://www.enlinque.com

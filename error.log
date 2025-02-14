@@ -1,0 +1,139 @@
+{
+  "timestamp": "${new Date().toISOString()}",
+  "level": "${level}", // ERROR, WARN, INFO, DEBUG, TRACE
+  "environment": "${process.env.NODE_ENV}",
+  "service": "backend-api",
+  "traceId": "${req.headers['x-trace-id'] || uuidv4()}",
+  "spanId": "${generateSpanId()}",
+  
+  // Request Context
+  "request": {
+    "id": "${req.id}",
+    "method": "${req.method}",
+    "url": "${req.originalUrl}",
+    "path": "${req.path}",
+    "params": ${JSON.stringify(req.params)},
+    "query": ${JSON.stringify(req.query)},
+    "headers": {
+      "user-agent": "${req.headers['user-agent']}",
+      "referer": "${req.headers['referer']}",
+      "correlation-id": "${req.headers['x-correlation-id']}"
+    },
+    "clientIp": "${req.ip}",
+    "protocol": "${req.protocol}"
+  },
+
+  // User Context
+  "user": {
+    "id": "${req.user?.id || 'anonymous'}",
+    "type": "${req.user?.type}",
+    "sessionId": "${req.sessionID}"
+  },
+
+  // Error Details
+  "error": {
+    "name": "${error.name}",
+    "message": "${error.message}",
+    "code": "${error.code}",
+    "stack": "${error.stack}",
+    "cause": "${error.cause}",
+    "type": "${error.type}",
+    "details": ${JSON.stringify(error.details || {})},
+    "handled": ${isHandledError}
+  },
+
+  // Performance Metrics
+  "performance": {
+    "responseTime": "${responseTime}ms",
+    "processCpuUsage": ${process.cpuUsage()},
+    "memoryUsage": {
+      "heapTotal": "${process.memoryUsage().heapTotal}",
+      "heapUsed": "${process.memoryUsage().heapUsed}",
+      "external": "${process.memoryUsage().external}",
+      "rss": "${process.memoryUsage().rss}"
+    },
+    "activeConnections": ${activeConnections},
+    "queueLength": ${queueLength}
+  },
+
+  // System Context
+  "system": {
+    "hostname": "${os.hostname()}",
+    "platform": "${process.platform}",
+    "nodeVersion": "${process.version}",
+    "uptime": "${process.uptime()}",
+    "pid": "${process.pid}",
+    "cluster": {
+      "workerId": "${cluster.worker?.id}",
+      "isMaster": ${cluster.isMaster}
+    }
+  },
+
+  // Database Metrics (if applicable)
+  "database": {
+    "operation": "${dbOperation}",
+    "collection": "${collection}",
+    "queryTime": "${queryTime}ms",
+    "affected": ${recordsAffected},
+    "connectionPool": {
+      "active": ${activeConnections},
+      "available": ${availableConnections},
+      "pending": ${pendingConnections}
+    }
+  },
+
+  // Security Context
+  "security": {
+    "authMethod": "${authMethod}",
+    "permissions": ${JSON.stringify(permissions)},
+    "rateLimit": {
+      "current": ${currentRate},
+      "limit": ${rateLimit},
+      "remaining": ${remainingRequests}
+    },
+    "threatInfo": {
+      "suspicious": ${isSuspicious},
+      "reasons": ${JSON.stringify(suspiciousReasons)}
+    }
+  },
+
+  // Custom Business Context
+  "business": {
+    "transactionId": "${transactionId}",
+    "feature": "${feature}",
+    "component": "${component}",
+    "action": "${action}",
+    "result": "${result}"
+  },
+
+  // Recovery Actions
+  "recovery": {
+    "action": "${recoveryAction}",
+    "successful": ${recoverySuccessful},
+    "attempts": ${recoveryAttempts},
+    "nextRetry": "${nextRetryTime}"
+  },
+
+  // Additional Context
+  "additionalInfo": ${JSON.stringify(additionalContext)},
+  "tags": ${JSON.stringify(tags)},
+  "metadata": ${JSON.stringify(metadata)}
+}
+
+# Log Rotation Configuration
+/var/log/backend/*.log {
+    daily
+    rotate 14
+    compress
+    delaycompress
+    notifempty
+    create 0640 www-data www-data
+    sharedscripts
+    postrotate
+        /usr/bin/systemctl reload nginx
+    endscript
+    missingok
+}
+
+# Sample Log Entry Format (one-line)
+[2025-02-11T10:15:30.555Z] [ERROR] [backend-api] [tx-123e4567-e89b] Error processing payment | {"error":{"name":"PaymentError","message":"Invalid card","code":"PAYMENT_001"},"request":{"method":"POST","path":"/api/payments"},"user":{"id":"usr_123"},"performance":{"responseTime":"145ms"}}
