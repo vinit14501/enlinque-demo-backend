@@ -7,7 +7,7 @@ const validateContactForm = [
   body("phone")
     .trim()
     .matches(/^\+?[\d\s-]+$/),
-  body("message").trim().isLength({ min: 10, max: 1000 }).escape(),
+  body("message").trim().isLength({ max: 1000 }).escape(),
 ]
 
 const validatePlanForm = [
