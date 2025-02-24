@@ -36,6 +36,10 @@ const planFormSchema = new mongoose.Schema({
       type: Number,
       required: [true, "Plan price is required"],
     },
+    isStartingPrice: {
+      type: Boolean,
+      default: false,
+    },
   },
   submittedAt: {
     type: Date,

@@ -19,6 +19,7 @@ const validatePlanForm = [
   body("selectedPlan").isObject(),
   body("selectedPlan.name").trim().isString(),
   body("selectedPlan.price").isNumeric(),
+  body("selectedPlan.isStartingPrice").optional().isBoolean(),
 ]
 
 const validate = (req, res, next) => {

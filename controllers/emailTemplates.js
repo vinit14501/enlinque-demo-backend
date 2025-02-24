@@ -1,4 +1,3 @@
-// backend/controllers/emailTemplates.js
 export const contactFormTemplate = (data) => `
 <!DOCTYPE html>
 <html>
@@ -44,6 +43,7 @@ export const planFormTemplate = (data) => `
     .content { padding: 20px; }
     .plan-details { background: #f0f7ff; padding: 15px; margin: 10px 0; }
     .footer { background: #f5f5f5; padding: 20px; text-align: center; }
+    .price-label { color: #666; font-size: 0.9em; margin-bottom: 4px; }
   </style>
 </head>
 <body>
@@ -58,6 +58,11 @@ export const planFormTemplate = (data) => `
       <div class="plan-details">
         <h3>Selected Plan Details</h3>
         <p><strong>Plan Name:</strong> ${data.selectedPlan.name}</p>
+        ${
+          data.selectedPlan.isStartingPrice
+            ? '<p class="price-label">Starting at</p>'
+            : ""
+        }
         <p><strong>Price:</strong> $${data.selectedPlan.price}/month</p>
       </div>
       <p><strong>Submitted at:</strong> ${new Date(
